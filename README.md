@@ -1,27 +1,58 @@
-# Ember-co
+# ember-co
 
-This README outlines the details of collaborating on this Ember addon.
+[![Build Status](https://travis-ci.org/akatov/ember-co.svg?branch=master)](https://travis-ci.org/akatov/ember-co)
+[![npm Version](https://img.shields.io/npm/v/ember-co.svg?style=flat-square)](https://www.npmjs.org/package/ember-co)
+[![Ember Observer Score](http://emberobserver.com/badges/ember-popout.svg)](http://emberobserver.com/addons/ember-co)
+
+A [tj/co](https://github.com/tj/co) implementation for [Ember](http://emberjs.com/).
 
 ## Installation
 
-* `git clone <repository-url>` this repository
-* `cd ember-co`
-* `npm install`
-* `bower install`
+```bash
+ember install ember-co
+```
 
-## Running
+## Usage
 
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
+To create a Promise
 
-## Running Tests
+```js
+import co from 'ember-co';
+...
+let companyNamePromise = co(function*() {
+  let user = yield this.store.findRecord('user', 'Johnny');
 
-* `npm test` (Runs `ember try:each` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
+  // assuming the User model has an asynchronous `belongsTo` relationship with Company model
+  let company = yield user.get('company');
 
-## Building
+  // name can be both a synchronous and an asynchronous property
+  return company.get('name');
+});
 
-* `ember build`
+console.assert(companyNamePromise instanceof Ember.RSVP.Promise, 'co returns an Ember promise');
 
-For more information on using ember-cli, visit [http://ember-cli.com/](http://ember-cli.com/).
+companyNamePromise.then(console.log)
+```
+
+To create a function that returns a Promise
+
+```js
+import { wrap } from 'ember-co';
+
+let UserRoute = Ember.Route.extend({
+  model: wrap(function*({ id }) {
+    let user = yield this.store.findRecord('user', id);
+    this.set('user', user);
+    let friends = user.get('friends');
+    return { user, friends };
+  }),
+
+  actions: {
+    updateCompanyName: wrap(function*(newName) {
+      this.get('user');
+      let company = yield user.get('company');
+      company.set('name', newName);
+    }),
+  }
+});
+```
