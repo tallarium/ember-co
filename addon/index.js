@@ -118,7 +118,7 @@ export default function co(gen, ...args) {
   // which leads to memory leak errors.
   // see https://github.com/tj/co/issues/180
   return new Promise(function(resolve, reject) {
-    if (typeOf(gen) === 'function') {
+    if (typeof gen === 'function') {
       gen = gen.apply(ctx, args);
     }
     if (!gen || typeOf(gen.next) !== 'function') {
