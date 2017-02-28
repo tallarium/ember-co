@@ -27,7 +27,7 @@ let companyNamePromise = co(function*() {
 
   // name can be both a synchronous and an asynchronous property
   return company.get('name');
-});
+}, 'promise label'); // label is optional
 
 console.assert(companyNamePromise instanceof Ember.RSVP.Promise, 'co returns an Ember promise');
 
@@ -45,14 +45,14 @@ let UserRoute = Ember.Route.extend({
     this.set('user', user);
     let friends = user.get('friends');
     return { user, friends };
-  }),
+  }, 'model promise'), // label is optional
 
   actions: {
     updateCompanyName: wrap(function*(newName) {
       this.get('user');
       let company = yield user.get('company');
       company.set('name', newName);
-    }),
+    }, 'update company name action'), // label is optional
   }
 });
 ```
