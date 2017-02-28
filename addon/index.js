@@ -108,10 +108,11 @@ function objectToPromise(obj) {
  * and return a promise.
  *
  * @param {Function} fn
+ * @param {String} label
  * @return {Promise}
  * @api public
  */
-export default function co(gen, ...args) {
+export default function co(gen, label) {
   let ctx = this;
 
   // we wrap everything in a promise to avoid promise chaining,
@@ -119,7 +120,7 @@ export default function co(gen, ...args) {
   // see https://github.com/tj/co/issues/180
   return new Promise(function(resolve, reject) {
     if (typeof gen === 'function') {
-      gen = gen.apply(ctx, args);
+      gen = gen.call(ctx);
     }
     if (!gen || typeOf(gen.next) !== 'function') {
       return resolve(gen);
@@ -176,7 +177,7 @@ export default function co(gen, ...args) {
     onFulfilled();
 
     return null;
-  });
+  }, label);
 }
 
 /**
@@ -187,14 +188,15 @@ export default function co(gen, ...args) {
  * unnecessary closure.
  *
  * @param {GeneratorFunction} fn
+ * @param {String} label
  * @return {Function}
  * @api public
  */
-co.wrap = function(fn) {
+co.wrap = function(fn, label) {
   createPromise.__generatorFunction__ = fn;
   return createPromise;
   function createPromise(...args) {
-    return co.call(this, fn.apply(this, args));
+    return co.call(this, fn.apply(this, args), label);
   }
 };
 
