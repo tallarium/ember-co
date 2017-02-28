@@ -15,7 +15,7 @@ const {
  *
  * @param {Object} obj
  * @return {Boolean}
- * @api private
+ * @private
  */
 function isPromise(obj) {
   return typeOf(obj.then) === 'function';
@@ -26,7 +26,7 @@ function isPromise(obj) {
  *
  * @param {Mixed} obj
  * @return {Boolean}
- * @api private
+ * @private
  */
 function isGenerator(obj) {
   return typeOf(obj.next) === 'function' && typeOf(obj.throw) === 'function';
@@ -37,7 +37,7 @@ function isGenerator(obj) {
  *
  * @param {Mixed} obj
  * @return {Boolean}
- * @api private
+ * @private
  */
 function isGeneratorFunction({ constructor }) {
   return constructor && (
@@ -52,7 +52,7 @@ function isGeneratorFunction({ constructor }) {
  *
  * @param {Mixed} obj
  * @return {Promise}
- * @api private
+ * @private
  */
 function toPromise(obj) {
   if (!obj) {
@@ -79,7 +79,7 @@ function toPromise(obj) {
  *
  * @param {Array} obj
  * @return {Promise}
- * @api private
+ * @private
  */
 function arrayToPromise(obj) {
   return all(obj.map(toPromise, this));
@@ -91,7 +91,7 @@ function arrayToPromise(obj) {
  *
  * @param {Object} obj
  * @return {Promise}
- * @api private
+ * @private
  */
 function objectToPromise(obj) {
   let promises = {};
@@ -110,17 +110,16 @@ function objectToPromise(obj) {
  * @param {Function} fn
  * @param {String} label
  * @return {Promise}
- * @api public
  */
 export default function co(gen, label) {
-  let ctx = this;
+  let self = this;
 
   // we wrap everything in a promise to avoid promise chaining,
   // which leads to memory leak errors.
   // see https://github.com/tj/co/issues/180
   return new Promise(function(resolve, reject) {
     if (typeof gen === 'function') {
-      gen = gen.call(ctx);
+      gen = gen.call(self);
     }
     if (!gen || typeOf(gen.next) !== 'function') {
       return resolve(gen);
@@ -142,14 +141,14 @@ export default function co(gen, label) {
     /**
      * @param {Mixed} res
      * @return {Promise}
-     * @api private
+     * @private
      */
     let onFulfilled = createStepFun('next');
 
     /**
      * @param {Error} err
      * @return {Promise}
-     * @api private
+     * @private
      */
     let onRejected = createStepFun('throw');
 
@@ -159,13 +158,13 @@ export default function co(gen, label) {
      *
      * @param {Object} ret
      * @return {Promise}
-     * @api private
+     * @private
      */
     function next(ret) {
       if (ret.done) {
         return resolve(ret.value);
       }
-      let value = toPromise.call(ctx, ret.value);
+      let value = toPromise.call(self, ret.value);
       if (value && isPromise(value)) {
         return value.then(onFulfilled, onRejected);
       }
@@ -190,14 +189,13 @@ export default function co(gen, label) {
  * @param {GeneratorFunction} fn
  * @param {String} label
  * @return {Function}
- * @api public
  */
 co.wrap = function(fn, label) {
-  createPromise.__generatorFunction__ = fn;
-  return createPromise;
   function createPromise(...args) {
     return co.call(this, fn.apply(this, args), label);
   }
+  createPromise.__generatorFunction__ = fn;
+  return createPromise;
 };
 
 const { wrap } = co;
