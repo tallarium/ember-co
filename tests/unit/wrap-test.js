@@ -1,6 +1,7 @@
 import { wrap } from 'ember-co';
 import { module, test } from 'qunit';
-import Ember from 'ember';
+import { typeOf } from '@ember/utils';
+import { Promise } from 'rsvp';
 
 module('Unit | { wrap }');
 
@@ -9,7 +10,7 @@ test('it creates a function which returns a promise', function(assert) {
   let f = wrap(function*() {
     yield [];
   });
-  assert.ok(Ember.typeOf(f) === 'function');
+  assert.ok(typeOf(f) === 'function');
   let r = f();
-  assert.ok(r instanceof Ember.RSVP.Promise);
+  assert.ok(r instanceof Promise);
 });

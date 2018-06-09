@@ -1,14 +1,5 @@
-import Ember from 'ember';
-
-const {
-  typeOf,
-  RSVP: {
-    all,
-    hash,
-    Promise
-  }
-} = Ember;
-
+import { typeOf } from '@ember/utils';
+import { all, hash, Promise } from 'rsvp';
 
 /**
  * Check if `obj` is a promise.
@@ -41,9 +32,9 @@ function isGenerator(obj) {
  */
 function isGeneratorFunction({ constructor }) {
   return constructor && (
-      constructor.name === 'GeneratorFunction' ||
-	  constructor.displayName === 'GeneratorFunction' ||
-	  isGenerator(constructor.prototype)
+    constructor.name === 'GeneratorFunction' ||
+      constructor.displayName === 'GeneratorFunction' ||
+      isGenerator(constructor.prototype)
   );
 }
 
