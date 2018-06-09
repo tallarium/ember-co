@@ -1,6 +1,6 @@
 # ember-co
 
-[![Build Status](https://travis-ci.org/akatov/ember-co.svg?branch=master)](https://travis-ci.org/akatov/ember-co)
+[![Build Status](https://travis-ci.org/tallarium/ember-co.svg?branch=master)](https://travis-ci.org/tallarium/ember-co)
 [![npm Version](https://img.shields.io/npm/v/ember-co.svg?style=flat-square)](https://www.npmjs.org/package/ember-co)
 [![Ember Observer Score](http://emberobserver.com/badges/ember-popout.svg)](http://emberobserver.com/addons/ember-co)
 
