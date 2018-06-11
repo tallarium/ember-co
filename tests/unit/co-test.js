@@ -1,6 +1,6 @@
 import co from 'ember-co';
 import { module, test } from 'qunit';
-import Ember from 'ember';
+import { Promise } from 'rsvp';
 
 module('Unit | co');
 
@@ -9,5 +9,5 @@ test('it creates an instance of Ember.RSVP.Promise', function(assert) {
   let promise = co(function*() {
     yield [];
   });
-  assert.ok(promise instanceof Ember.RSVP.Promise);
+  assert.ok(promise instanceof Promise);
 });
