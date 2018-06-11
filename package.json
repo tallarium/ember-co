@@ -1,6 +1,6 @@
 {
   "name": "ember-co",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "tj/co for Ember",
   "keywords": [
     "ember-addon",
